@@ -3,7 +3,7 @@ name: Deploy to Hostinger via FTP
 on:
   push:
     branches:
-      - main # Only deploys when you push to main
+      - main
 
 jobs:
   build-and-deploy:
@@ -23,23 +23,22 @@ jobs:
         run: |
           npm install
           npm run build
+          # Zip the contents of the 'out' folder into one file
+          cd out && zip -r ../deploy.zip . && cd ..
 
       - name: Install FTP client
         run: sudo apt-get update && sudo apt-get install -y lftp
 
-      - name: Upload files via FTP
+      - name: Upload Single Zip
         env:
           FTP_HOST: ${{ secrets.FTP_SERVER }}
           FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
         run: |
           lftp -c "
-          set ftp:passive-mode true;
           set net:timeout 60;
-          set net:max-retries 1;
-          set net:reconnect-interval-base 10;
+          set net:max-retries 2;
           open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_HOST;
-          # parallel=1 is the ONLY safe way for Hostinger Shared
-          # -X ignores unnecessary large files
-          mirror -R ./out/ ./public_html/ --delete --ignore-time --parallel=1 --verbose -X *.map -X .git/ -X .next/;
+          # Uploading one file is much more stable than hundreds
+          put -O ./public_html/ deploy.zip;
           "
