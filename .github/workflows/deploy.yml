@@ -3,7 +3,7 @@ name: Deploy to Hostinger via FTP
 on:
   push:
     branches:
-      - main # Deploys only when the main branch is updated
+      - main # Only deploys when you push to main
 
 jobs:
   build-and-deploy:
@@ -34,12 +34,12 @@ jobs:
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
         run: |
           lftp -c "
-          set net:timeout 10;
-          set net:max-retries 3;
-          set ftp:list-options -a;
+          set ftp:passive-mode true;
+          set net:timeout 60;
+          set net:max-retries 1;
+          set net:reconnect-interval-base 10;
           open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_HOST;
-          # Optimized mirror settings:
-          # --parallel=2: Using fewer connections prevents Hostinger timeouts.
-          # -X *.map: Skips large debug files to save upload time.
-          # --delete: Keeps the server clean.
-          mirror -R ./out/ ./public_html/ --delete --ignore-time --parallel=2 --verbose -X *.map -X .git/ -X .next/; "
+          # parallel=1 is the ONLY safe way for Hostinger Shared
+          # -X ignores unnecessary large files
+          mirror -R ./out/ ./public_html/ --delete --ignore-time --parallel=1 --verbose -X *.map -X .git/ -X .next/;
+          "
