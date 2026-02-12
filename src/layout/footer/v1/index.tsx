@@ -70,7 +70,7 @@ export function Footer({ className }: SectionProps) {
   const { about, columnOne, columnTwo, columnThree, footerBottom } =
     footerSectionData;
   useEffect(() => {
-    fetch('/api/test.php')
+    fetch('/api/database.php')
       .then((res) => res.json())
       .then((data) => console.log(data));
   }, []);
