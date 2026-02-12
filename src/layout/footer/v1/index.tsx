@@ -1,3 +1,4 @@
+'use client';
 import { footerSectionData } from '@/data/layout/footer/v1';
 import { ImageProps, LinkProps, SectionProps } from '@/src/common-types';
 import { Container } from '@/src/components/container';
@@ -12,6 +13,7 @@ import {
   FaPhone,
 } from 'react-icons/fa6';
 import { FaCalendarDays } from 'react-icons/fa6';
+import { useEffect } from 'react';
 
 interface RecentBlog {
   slug: string;
@@ -67,6 +69,12 @@ const textColor = cn(
 export function Footer({ className }: SectionProps) {
   const { about, columnOne, columnTwo, columnThree, footerBottom } =
     footerSectionData;
+  useEffect(() => {
+    fetch('/api/test.php')
+      .then((res) => res.json())
+      .then((data) => console.log(data));
+  }, []);
+
   return (
     <footer
       className={cn(
