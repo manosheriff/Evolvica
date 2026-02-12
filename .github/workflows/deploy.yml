@@ -3,7 +3,7 @@ name: Deploy to Hostinger via FTP
 on:
   push:
     branches:
-      - main
+      - main # Automatically deploys when you push to the main branch
 
 jobs:
   build-and-deploy:
@@ -23,7 +23,7 @@ jobs:
         run: |
           npm install
           npm run build
-          # Zip all files inside the 'out' folder into deploy.zip
+          # We zip the 'out' contents so Hostinger only has to handle ONE file
           cd out && zip -r ../deploy.zip . && cd ..
 
       - name: Install FTP client
@@ -36,10 +36,10 @@ jobs:
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
         run: |
           lftp -c "
-          set ssl:verify-certificate no;  # Fixes the certificate name mismatch error
-          set net:timeout 60;             # Gives the server plenty of time
-          set net:max-retries 2;          # Prevents endless loops if server is down
+          set ssl:verify-certificate no;  # Fixes the 'certificate common name' error
+          set net:timeout 60;             # Gives the server more time to respond
+          set net:max-retries 1;          # Prevents long hangs if the connection drops
           open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_HOST;
-          # 'put' is for uploading a single file
-          put -O ./public_html/ deploy.zip;
+          # We use 'put' to place the zip directly into the public_html folder
+          put deploy.zip -o public_html/deploy.zip;
           "
