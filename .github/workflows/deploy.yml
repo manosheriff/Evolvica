@@ -23,13 +23,13 @@ jobs:
         run: |
           npm install
           npm run build
-          # Zip everything inside 'out' into one bundle
+          # Zip only the static output from the 'out' folder
           cd out && zip -r ../deploy.zip . && cd ..
 
       - name: Install FTP client
         run: sudo apt-get update && sudo apt-get install -y lftp
 
-      - name: Upload Single Zip
+      - name: Upload Zip to Domain Root
         env:
           FTP_HOST: ${{ secrets.FTP_SERVER }}
           FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
@@ -40,8 +40,6 @@ jobs:
           set net:timeout 60;
           set net:max-retries 1;
           open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_HOST;
-          # 'ls -R' will print the directory tree so we can see where the file lands
-          ls -R;
-          # We remove 'public_html/' because your FTP user is likely already inside it
-          put deploy.zip -o deploy.zip;
+          # We use the full path discovered in your logs
+          put deploy.zip -o domains/evolvica.ai/public_html/deploy.zip;
           "
