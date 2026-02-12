@@ -1,4 +1,4 @@
-name: Deploy Next.js to Hostinger
+name: Deploy to Hostinger via FTP
 
 on:
   push:
@@ -17,27 +17,29 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm' # Speeds up future builds by caching dependencies
+          cache: 'npm'
 
-      - name: Install and Build
+      - name: Install & Build
         run: |
           npm install
           npm run build
-        # This creates the 'out' folder containing your static site
 
-      - name: Install LFTP
+      - name: Install FTP client
         run: sudo apt-get update && sudo apt-get install -y lftp
 
-      - name: Upload to Hostinger
+      - name: Upload files via FTP
         env:
           FTP_HOST: ${{ secrets.FTP_SERVER }}
           FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
         run: |
           lftp -c "
+          set net:timeout 10;
+          set net:max-retries 3;
+          set ftp:list-options -a;
           open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_HOST;
-          # Mirror ONLY the './out' folder to './public_html'
-          # --delete: Removes old files on the server that are no longer in your project
-          # --parallel=10: Uploads multiple files at once to speed up the process
-          mirror -R ./out/ ./public_html/ --delete --ignore-time --parallel=10 --verbose;
-          "
+          # Optimized mirror settings:
+          # --parallel=2: Using fewer connections prevents Hostinger timeouts.
+          # -X *.map: Skips large debug files to save upload time.
+          # --delete: Keeps the server clean.
+          mirror -R ./out/ ./public_html/ --delete --ignore-time --parallel=2 --verbose -X *.map -X .git/ -X .next/; "
