@@ -1,53 +1,37 @@
-'use server';
-
 import { ServerActionResponse } from '@/src/common-types';
-import nodemailer from 'nodemailer';
 import { ContactUsSchemaType } from '..';
 
+// We removed 'use server' because Hostinger Shared Hosting is static
 export async function contactUsFormSubmit(
   values: ContactUsSchemaType
 ): Promise<ServerActionResponse<boolean>> {
-  const { name, email, subject, message } = values;
+  const FORMSPREE_ENDPOINT = "https://formspree.io/f/your_form_id_here"; // Get this from formspree.io
 
   try {
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.CONTACT_MAIL_ADDRESS,
-        pass: process.env.CONTACT_MAIL_PASSWORD,
+    const response = await fetch(FORMSPREE_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
       },
+      body: JSON.stringify(values),
     });
 
-    const mailOptions = {
-      from: email,
-      to: process.env.CONTACT_MAIL_ADDRESS,
-      subject: subject,
-      html: `
-        <h3 style="margin-bottom:8px">Name:</h3>
-        <p style="margin:0">${name}</p>
-        <br/>
-        <h3 style="margin:0; margin-bottom:8px">Email:</h3>
-        <p style="margin:0">${email}</p>
-        <br/>
-        <h3 style="margin:0; margin-bottom:8px">Body:</h3>
-        <p style="margin-top:0">${message}</p>
-      `,
-    };
-
-    await transporter.sendMail(mailOptions);
-
-    return {
-      isSuccess: true,
-      data: true,
-      message: 'Thanks for getting in touch',
-    };
+    if (response.ok) {
+      return {
+        isSuccess: true,
+        data: true,
+        message: 'Thanks for getting in touch! We will get back to you soon.',
+      };
+    } else {
+      throw new Error("Form submission failed");
+    }
   } catch (error) {
-    console.error(error);
-
+    console.error("Submission Error:", error);
     return {
       isSuccess: false,
       data: null,
-      message: 'Internal Server Error',
+      message: 'There was an error sending your message. Please try again.',
     };
   }
 }
