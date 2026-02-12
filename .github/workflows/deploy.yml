@@ -3,7 +3,7 @@ name: Deploy to Hostinger via FTP
 on:
   push:
     branches:
-      - main  # deploys only when main branch is updated
+      - main # deploys only when main branch is updated
 
 jobs:
   ftp-deploy:
