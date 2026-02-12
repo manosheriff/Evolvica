@@ -4,7 +4,7 @@ import { menuItemsProps } from '../menu';
 export const headerData: HeaderProps = {
   menuItems: menuItemsProps,
   contactInfo: {
-    title: 'Need help?',
-    phone: '(307) 555-0133',
+    title: 'Get  A Quote',
+    phone: '01550458866',
   },
 };

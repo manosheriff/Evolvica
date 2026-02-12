@@ -7,9 +7,9 @@ export const heroData: HeroProps = {
         src: '/assets/images/hero/hero-1.jpg',
         alt: 'hero 1',
       },
-      title: 'Empowering Your Digital Future',
+      title: 'AI Solutions for Real-World Business Challenges',
       button: {
-        label: 'Discover More',
+        label: 'Get Yours Now',
         href: '/',
       },
     },
@@ -18,21 +18,10 @@ export const heroData: HeroProps = {
         src: '/assets/images/hero/hero-11.jpeg',
         alt: 'hero 1',
       },
-      title: 'Empowering Your Digital Future',
+      title: 'AI-powered solutions, tailored to your industry needs',
       button: {
         label: 'Discover More',
-        href: '/',
-      },
-    },
-    {
-      image: {
-        src: '/assets/images/hero/hero-12.jpeg',
-        alt: 'hero 1',
-      },
-      title: 'Empowering Your Digital Future',
-      button: {
-        label: 'Discover More',
-        href: '/',
+        href: '/contact',
       },
     },
   ],
