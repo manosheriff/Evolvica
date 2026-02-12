@@ -5,14 +5,14 @@ import { ContactUsSchemaType } from '..';
 export async function contactUsFormSubmit(
   values: ContactUsSchemaType
 ): Promise<ServerActionResponse<boolean>> {
-  const FORMSPREE_ENDPOINT = "https://formspree.io/f/your_form_id_here"; // Get this from formspree.io
+  const FORMSPREE_ENDPOINT = 'https://formspree.io/f/your_form_id_here'; // Get this from formspree.io
 
   try {
     const response = await fetch(FORMSPREE_ENDPOINT, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
       },
       body: JSON.stringify(values),
     });
@@ -24,10 +24,10 @@ export async function contactUsFormSubmit(
         message: 'Thanks for getting in touch! We will get back to you soon.',
       };
     } else {
-      throw new Error("Form submission failed");
+      throw new Error('Form submission failed');
     }
   } catch (error) {
-    console.error("Submission Error:", error);
+    console.error('Submission Error:', error);
     return {
       isSuccess: false,
       data: null,

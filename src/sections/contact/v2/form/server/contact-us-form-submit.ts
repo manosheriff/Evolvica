@@ -12,14 +12,14 @@ export async function contactUsFormSubmit(
   const { name, email, subject, message, phone } = values;
 
   // 1. Sign up at Formspree.io and replace the ID below
-  const FORMSPREE_ENDPOINT = "https://formspree.io/f/your_form_id_here";
+  const FORMSPREE_ENDPOINT = 'https://formspree.io/f/your_form_id_here';
 
   try {
     const response = await fetch(FORMSPREE_ENDPOINT, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
       },
       body: JSON.stringify({
         name,
@@ -40,7 +40,7 @@ export async function contactUsFormSubmit(
       message: 'Thanks for getting in touch',
     };
   } catch (error) {
-    console.error("Submission error:", error);
+    console.error('Submission error:', error);
 
     return {
       isSuccess: false,
