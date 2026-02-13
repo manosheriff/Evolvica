@@ -17,8 +17,11 @@ export default function LoginPage() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      router.push('/admin');
+      // Add this check
+      if (auth) {
+        await signInWithEmailAndPassword(auth, email, password);
+        router.push('/admin');
+      }
     } catch (error) {
       alert('Invalid login details');
       setIsLoading(false);

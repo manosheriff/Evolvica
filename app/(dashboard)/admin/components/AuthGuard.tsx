@@ -10,12 +10,13 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
   useEffect(() => {
+    // Add this check
+    if (!auth) return;
+
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (!user) {
-        // Not logged in? Send them to login
         router.push('/login');
       } else {
-        // Logged in? Stop loading and show the page
         setLoading(false);
       }
     });

@@ -1,16 +1,16 @@
-name: Deploy to Hostinger via FTP
+name: Deploy Evolvica to Hostinger
 
 on:
   push:
     branches:
-      - main
+      - main # or your default branch name
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Setup Node.js
@@ -19,27 +19,26 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - name: Install & Build
-        run: |
-          npm install
-          npm run build
-          # Zip only the static output from the 'out' folder
-          cd out && zip -r ../deploy.zip . && cd ..
+      - name: Install Dependencies
+        run: npm install
 
-      - name: Install FTP client
-        run: sudo apt-get update && sudo apt-get install -y lftp
-
-      - name: Upload Zip to Domain Root
+      - name: Build and Export
+        # This is where we inject the secrets from GitHub into the build process
         env:
-          FTP_HOST: ${{ secrets.FTP_SERVER }}
-          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
-          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
-        run: |
-          lftp -c "
-          set ssl:verify-certificate no;
-          set net:timeout 60;
-          set net:max-retries 1;
-          open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_HOST;
-          # We use the full path discovered in your logs
-          put deploy.zip -o domains/evolvica.ai/public_html/deploy.zip;
-          "
+          NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }}
+          NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ secrets.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN }}
+          NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_PROJECT_ID }}
+          NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: ${{ secrets.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET }}
+          NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID }}
+          NEXT_PUBLIC_FIREBASE_APP_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_APP_ID }}
+          NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID }}
+        run: npm run build
+
+      - name: Deploy to Hostinger
+        # Replace this with your specific deployment method (FTP/SFTP)
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./out/ # Next.js static export folder

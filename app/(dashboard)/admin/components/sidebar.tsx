@@ -27,12 +27,13 @@ export default function Sidebar() {
 
   const handleLogout = async () => {
     try {
-      await signOut(auth);
-      // Redirect to login page after successful logout
-      router.push('/login');
+      // Add this check
+      if (auth) {
+        await signOut(auth);
+        router.push('/login');
+      }
     } catch (error) {
       console.error('Logout error:', error);
-      alert('Failed to log out. Please try again.');
     }
   };
 
