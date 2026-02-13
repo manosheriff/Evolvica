@@ -1,13 +1,12 @@
 import { CustomLink } from '@/src/components/custom-link';
 import Image from 'next/image';
-
 import logoLight from 'public/assets/images/brand/logo-light.png';
 import logoDark from 'public/assets/images/brand/logo-dark.png';
 
 export function BrandLogo() {
   return (
     <CustomLink href="/">
-      <Image
+      {/* <Image
         className="logo-light dark:hidden"
         src={logoLight.src}
         width={logoLight.width}
@@ -28,7 +27,12 @@ export function BrandLogo() {
         alt={`${process.env.NEXT_PUBLIC_SITE_NAME} brand logo`}
         sizes="100vw"
         priority
-      />
+      /> */}
+      <h1 
+              className="text-2xl font-bold tracking-tight text-white"
+            >
+              Evolvica<span className="text-blue-500">.</span>
+            </h1>
     </CustomLink>
   );
 }

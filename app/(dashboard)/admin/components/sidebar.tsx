@@ -1,7 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation'; // Added useRouter
+import { signOut } from 'firebase/auth'; // Import Firebase signOut
+import { auth } from '../lib/firebase'; // Adjust this path to your firebase config
 import {
   LayoutDashboard,
   Users,
@@ -21,6 +23,18 @@ const menuItems = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter(); // Initialize router
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      // Redirect to login page after successful logout
+      router.push('/login'); 
+    } catch (error) {
+      console.error('Logout error:', error);
+      alert('Failed to log out. Please try again.');
+    }
+  };
 
   return (
     <aside className="flex h-screen w-64 flex-col border-r border-gray-200 bg-white">
@@ -60,9 +74,12 @@ export default function Sidebar() {
         })}
       </nav>
 
-      {/* Logout / User Profile Section */}
+      {/* Logout Section */}
       <div className="border-t border-gray-200 p-4">
-        <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-gray-600 transition-colors hover:bg-red-50 hover:text-red-600">
+        <button 
+          onClick={handleLogout} // Attach the logout handler
+          className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-gray-600 transition-colors hover:bg-red-50 hover:text-red-600"
+        >
           <LogOut className="h-5 w-5" />
           <span>Logout</span>
         </button>
