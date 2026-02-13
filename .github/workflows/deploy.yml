@@ -32,13 +32,18 @@ jobs:
           NEXT_PUBLIC_FIREBASE_APP_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_APP_ID }}
           NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID }}
         run: npm run build
-      - name: 🚀 Force Sync to Hostinger
+      - name: 📦 Zip the Build
+        run: zip -r deploy.zip ./out/*
+
+      - name: 🚀 Upload Zip to Hostinger
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           port: 21
-          local-dir: ./out/
-          server-dir: public_html/admin/
-          dangerous-clean-slate: true
+          local-dir: ./
+          server-dir: public_html/
+          exclude: |
+            **/*
+            !deploy.zip
