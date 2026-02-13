@@ -32,8 +32,7 @@ jobs:
           NEXT_PUBLIC_FIREBASE_APP_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_APP_ID }}
           NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID }}
         run: npm run build
-
-      - name: 🚀 Deploy to Hostinger
+      - name: 🚀 Force Sync to Hostinger
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
@@ -41,5 +40,5 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           port: 21
           local-dir: ./out/
-          server-dir: ./public_html/admin/
+          server-dir: public_html/admin/
           dangerous-clean-slate: true
