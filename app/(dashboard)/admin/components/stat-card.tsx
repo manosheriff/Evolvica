@@ -1,4 +1,13 @@
-export function StatCard({ title, value, icon: Icon, trend }: any) {
+export function StatCard({
+  title,
+  value,
+  trend,
+}: {
+  title: string;
+  value: string;
+  icon: React.ComponentType;
+  trend: string;
+}) {
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
       <div className="flex items-center justify-between">
@@ -11,9 +20,7 @@ export function StatCard({ title, value, icon: Icon, trend }: any) {
             {trend} from last month
           </span>
         </div>
-        <div className="rounded-lg bg-blue-50 p-3">
-          <Icon className="h-6 w-6 text-blue-600" />
-        </div>
+        <div className="rounded-lg bg-blue-50 p-3"></div>
       </div>
     </div>
   );

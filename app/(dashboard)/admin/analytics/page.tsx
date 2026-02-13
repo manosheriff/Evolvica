@@ -1,9 +1,7 @@
-// app/admin/analytics/page.tsx
 import { RevenueChart } from '../components/revenue-chart';
 import { DeviceCategoryChart } from '../components/device-chart';
 import { TrendingUp, Users, MousePointer2 } from 'lucide-react';
 import { StatCard } from '../components/stat-card';
-
 export default function AnalyticsPage() {
   return (
     <div className="space-y-8">
@@ -12,11 +10,9 @@ export default function AnalyticsPage() {
           Analytics Workspace
         </h1>
         <p className="text-gray-500">
-          Track your platform's performance and user behavior.
+          {`Track your platform's performance and user behavior.`}
         </p>
       </div>
-
-      {/* Real-time Quick Stats */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         <StatCard
           title="Conversion Rate"
@@ -37,8 +33,6 @@ export default function AnalyticsPage() {
           trend="+1.2%"
         />
       </div>
-
-      {/* Charts Section */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm lg:col-span-2">
           <h3 className="mb-4 font-semibold">Revenue Growth</h3>

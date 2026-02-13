@@ -1,6 +1,6 @@
 'use client';
 
-import { Search, Bell, User, ChevronDown } from 'lucide-react';
+import { Search, Bell, ChevronDown } from 'lucide-react';
 
 export default function Header() {
   return (
