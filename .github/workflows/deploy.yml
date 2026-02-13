@@ -36,13 +36,10 @@ jobs:
       - name: 🚀 Deploy to Hostinger
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          # Use the IP address 212.85.28.207 in your FTP_SERVER secret
-          server: ${{ secrets.FTP_SERVER }}    
+          server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          # Port 21 is confirmed in your Hostinger FTP Access panel
-          port: 21                             
-          local-dir: ./out/                    
-          # Set this to /public_html/admin/ to avoid overwriting your WordPress site
-          server-dir: ./public_html/admin/     
-          dangerous-clean-slate: false
+          port: 21
+          local-dir: ./out/
+          server-dir: ./public_html/admin/
+          dangerous-clean-slate: true
