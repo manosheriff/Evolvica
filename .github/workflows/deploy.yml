@@ -41,17 +41,13 @@ jobs:
 
       - name: Deploy via LFTP
         env:
-          FTP_HOST: ${{ secrets.FTP_SERVER }} 
+          FTP_HOST: ${{ secrets.FTP_SERVER }}
           FTP_USER: ${{ secrets.FTP_USERNAME }}
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
         run: |
-          lftp -f "
-          set ssl:verify-certificate no
-          set net:timeout 60
-          open $FTP_HOST
-          user $FTP_USER $FTP_PASSWORD
-          # This sends it to your public_html folder
-          cd public_html/admin/
-          put -O . deploy.zip
-          bye
-          "
+          lftp -c "
+          set ssl:verify-certificate no;
+          open -u $FTP_USER,$FTP_PASSWORD $FTP_HOST;
+          cd public_html/admin/;
+          put deploy.zip;
+          bye "
