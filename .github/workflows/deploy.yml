@@ -3,7 +3,7 @@ name: Deploy to Hostinger
 on:
   push:
     branches:
-      - main   # change to dev if needed
+      - main   # change if needed
 
 jobs:
   deploy:
@@ -22,9 +22,7 @@ jobs:
         run: npm install
 
       - name: Build project
-        run: |
-          npm run build
-          npx next export
+        run: npm run build
 
       - name: Install lftp
         run: sudo apt-get update && sudo apt-get install -y lftp
@@ -36,7 +34,7 @@ jobs:
           set ftp:ssl-allow no
           open $FTP_HOST
           user $FTP_USER $FTP_PASSWORD
-          mirror -R out/ public_html --delete --verbose
+          mirror -R out/ public_html --delete --verbose --parallel=5
           bye
           "
         env:
