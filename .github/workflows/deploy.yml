@@ -34,14 +34,13 @@ jobs:
           NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID }}
         run: npm run build
 
-      - name: 🚀 Deploy to Hostinger (SFTP)
+      - name: 🚀 Deploy to Hostinger
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: ${{ secrets.FTP_SERVER }} # Use your Site IP (e.g., 185.x.x.x)
+          server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          protocol: sftp # Secure protocol
-          port: 65002 # Hostinger SFTP port is 65002
-          local-dir: ./out/ # The static folder Next.js creates
-          server-dir: ./public_html/ # Change to ./public_html/admin/ if deploying to a subfolder
-          dangerous-clean-slate: false # Set to true only if you want to delete old files first
+          port: 65002                          # This port triggers the secure connection
+          local-dir: ./out/
+          server-dir: ./public_html/
+          dangerous-clean-slate: false
