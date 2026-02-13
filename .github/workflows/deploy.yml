@@ -3,27 +3,27 @@ name: Deploy Evolvica to Hostinger
 on:
   push:
     branches:
-      - main # or your default branch name
+      - main
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: 🚚 Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: 🟢 Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
 
-      - name: Install Dependencies
+      - name: 📦 Install Dependencies
         run: npm install
 
-      - name: Build and Export
-        # This is where we inject the secrets from GitHub into the build process
+      - name: 🏗️ Build and Export
+        # Injecting secrets here fixes the "auth/invalid-api-key" build error
         env:
           NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }}
           NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ secrets.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN }}
@@ -34,11 +34,14 @@ jobs:
           NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID }}
         run: npm run build
 
-      - name: Deploy to Hostinger
-        # Replace this with your specific deployment method (FTP/SFTP)
+      - name: 🚀 Deploy to Hostinger (SFTP)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: ${{ secrets.FTP_SERVER }}
+          server: ${{ secrets.FTP_SERVER }} # Use your Site IP (e.g., 185.x.x.x)
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./out/ # Next.js static export folder
+          protocol: sftp # Secure protocol
+          port: 65002 # Hostinger SFTP port is 65002
+          local-dir: ./out/ # The static folder Next.js creates
+          server-dir: ./public_html/ # Change to ./public_html/admin/ if deploying to a subfolder
+          dangerous-clean-slate: false # Set to true only if you want to delete old files first
