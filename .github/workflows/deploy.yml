@@ -3,33 +3,40 @@ name: Deploy to Hostinger
 on:
   push:
     branches:
-      - main # change to dev if you deploy from dev
+      - main   # change to dev if needed
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Create deployment zip
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build project
         run: |
-          zip -r deploy.zip . -x "*.git*" "node_modules/*"
+          npm run build
+          npx next export
 
       - name: Install lftp
         run: sudo apt-get update && sudo apt-get install -y lftp
 
-      - name: Deploy via LFTP
+      - name: Deploy via mirror
         run: |
           lftp -e "
           set ssl:verify-certificate no
           set ftp:ssl-allow no
-          set net:timeout 60
           open $FTP_HOST
           user $FTP_USER $FTP_PASSWORD
-          cd public_html
-          put deploy.zip -o deploy.zip
+          mirror -R out/ public_html --delete --verbose
           bye
           "
         env:
