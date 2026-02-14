@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "export:zip": "npm run build && zip -r out.zip out/",
     "start": "next start",
     "lint": "next lint",
     "tsc": "npx tsc",

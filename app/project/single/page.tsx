@@ -5,14 +5,15 @@ import { ProjectDetailsSection } from '@/src/sections/project-details/v1';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Techlab | Project details',
-  description: 'Techlab - IT Solutions and Services React Nextjs Template',
+  title: 'Evolvica | Project details',
+  description:
+    'Evolvica - Transform How You Qualify, Review, and Coach with AI',
 };
 
 export default function Page() {
   return (
     <>
-      <MainHeader version="2" />
+      <MainHeader version="1" />
       <HeroSection
         title="Project Details"
         breadcrumbItems={[

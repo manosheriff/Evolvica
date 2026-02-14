@@ -6,14 +6,15 @@ import { TestimonialSection } from '@/src/sections/testimonial/grid';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Techlab | Testimonial',
-  description: 'Techlab - IT Solutions and Services React Nextjs Template',
+  title: 'Evolvica | Testimonial',
+  description:
+    'Evolvica - Transform How You Qualify, Review, and Coach with AI',
 };
 
 export default function Page() {
   return (
     <>
-      <MainHeader version="2" />
+      <MainHeader version="1" />
       <HeroSection
         title="Testimonial"
         breadcrumbItems={[

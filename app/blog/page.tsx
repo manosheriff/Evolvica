@@ -5,23 +5,24 @@ import { HeroSection } from '@/src/sections/hero/v3';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Techlab | Blog',
-  description: 'Techlab - IT Solutions and Services React Nextjs Template',
+  title: 'Evolvica | Blog',
+  description:
+    'Evolvica - Transform How You Qualify, Review, and Coach with AI',
 };
 
 export default function Page() {
   return (
     <>
-      <MainHeader version="2" />
+      <MainHeader version="1" />
       <HeroSection
-        title="Blog Classic"
+        title="Blog Posts"
         breadcrumbItems={[
           {
             label: 'Home',
             href: '/',
           },
           {
-            label: 'Blog Classic',
+            label: 'Blog Posts',
           },
         ]}
       />

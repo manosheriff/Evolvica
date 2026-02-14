@@ -1,41 +1,83 @@
 'use client';
 
 import { Container } from '@/src/components/container';
-
-import { ImageProps, LinkProps } from '@/src/common-types';
 import { Button } from '@/src/components/button';
 import { CustomLink } from '@/src/components/custom-link';
 import { Shapes } from './shapes';
-import { heroData } from '@/data/hero/v1';
 import { cn } from '@/src/utils/shadcn';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import styles from './hero.module.css';
-import SwiperCore, { EffectFade } from 'swiper';
-import { Swiper as SwiperType, Navigation } from 'swiper';
-
-// Import Swiper styles
+import SwiperCore, { EffectFade, Navigation, Autoplay } from 'swiper';
+import { Swiper as SwiperType } from 'swiper';
 import 'swiper/swiper-bundle.min.css';
-import { useRef } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { FaArrowLeftLong, FaArrowRightLong } from 'react-icons/fa6';
 
-SwiperCore.use([EffectFade, Navigation]);
+SwiperCore.use([EffectFade, Navigation, Autoplay]);
 
 const navigationButtonCommonClasses = cn(
   'w-[60px] relative z-40 h-[60px] grid place-items-center leading-none text-[1.25rem] bg-accent-900 hover:bg-primary transition-all duration-300 text-white rounded-full'
 );
 
-export interface HeroProps {
-  items: {
-    title: string;
-    image: Omit<ImageProps, 'width' | 'height'>;
-    button: LinkProps;
-  }[];
+// Flattened interface to match your database columns
+export interface HeroItem {
+  id: number;
+  title: string;
+  image_src: string;
+  image_alt: string;
+  button_label: string;
+  button_href: string;
 }
 
-/** This section is expected to be used at the top of a given page */
+// Skeleton component to match your specific layout
+function HeroSkeleton() {
+  return (
+    <div className="relative flex animate-pulse items-center justify-center overflow-hidden bg-gray-200 py-[9.375rem] dark:bg-accent-800 lg:min-h-screen">
+      <Container>
+        <div className="relative z-10 mx-auto max-w-[800px] text-center lg:mt-[60px]">
+          <div className="flex flex-col items-center space-y-6 md:space-y-8">
+            <div className="h-10 w-3/4 rounded-md bg-gray-300 dark:bg-accent-700" />
+            <div className="h-10 w-1/2 rounded-md bg-gray-300 dark:bg-accent-700" />
+            <div className="mt-4 h-12 w-40 rounded-full bg-gray-300 dark:bg-accent-700" />
+          </div>
+        </div>
+      </Container>
+    </div>
+  );
+}
+
 export function Hero() {
   const swiperRef = useRef<SwiperType>();
-  const { items } = heroData;
+  const [items, setItems] = useState<HeroItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const API_URL = 'https://evolvica.ai/api/main.php';
+      const API_KEY = '54678we9uuroijkrtwj43qopurwiuueopioifioijegskljtkjrjh';
+
+      try {
+        const response = await fetch(API_URL, {
+          method: 'GET',
+          headers: {
+            'x-api-key': API_KEY,
+            'Content-Type': 'application/json',
+          },
+        });
+        if (!response.ok) throw new Error(`Status: ${response.status}`);
+        const result = await response.json();
+        setItems(result.hero || []);
+      } catch (error) {
+        console.error('Fetch Error:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  if (loading) return <HeroSkeleton />;
+
   return (
     <section className={styles['hero']}>
       {items && items.length > 0 && (
@@ -48,30 +90,27 @@ export function Hero() {
             swiperRef.current = swiper;
           }}
         >
-          {items.map((item, index) => (
-            <SwiperSlide key={index}>
+          {items.map((item) => (
+            <SwiperSlide key={item.id}>
               <div
                 className={cn(
                   'relative flex items-center justify-center overflow-hidden py-[9.375rem] lg:min-h-screen'
                 )}
               >
-                {/* Shapes  */}
+                {/* Shapes Component Restored */}
                 <Shapes />
 
                 <div
                   className={cn(
-                    'absolute inset-0 -z-1  bg-accent-700 bg-cover bg-no-repeat bg-blend-luminosity [background-position:top_center] [transform:scale(1)] [transition:7000ms_ease,opacity_1500ms_ease-in]',
+                    'absolute inset-0 -z-1 bg-accent-700 bg-cover bg-no-repeat bg-blend-luminosity [background-position:top_center] [transform:scale(1)] [transition:7000ms_ease,opacity_1500ms_ease-in]',
                     styles['hero-bg'],
-                    // before
-                    'before:absolute before:inset-0 before:bg-[#EDF8FE] before:opacity-80  dark:before:bg-accent-900',
-                    // after
-                    'after:absolute after:inset-0  after:[background:linear-gradient(180deg,rgba(255,255,255,0)_0%,#FFFFFF_100%)]  dark:after:[background:linear-gradient(180deg,rgba(20,20,22,0.00)_0%,#141416_100%)]'
+                    'before:absolute before:inset-0 before:bg-[#EDF8FE] before:opacity-80 dark:before:bg-accent-900',
+                    'after:absolute after:inset-0 after:[background:linear-gradient(180deg,rgba(255,255,255,0)_0%,#FFFFFF_100%)] dark:after:[background:linear-gradient(180deg,rgba(20,20,22,0.00)_0%,#141416_100%)]'
                   )}
-                  style={{ backgroundImage: `url(${item.image.src})` }}
+                  style={{ backgroundImage: `url(${item.image_src})` }}
                 />
 
                 <Container>
-                  {/* Main content  */}
                   <div
                     className={cn(
                       'relative z-10 mx-auto max-w-[800px] text-center text-accent-900 dark:text-white lg:mt-[60px]',
@@ -84,11 +123,11 @@ export function Hero() {
                       </h1>
                       <Button asChild className={cn('rounded-full')}>
                         <CustomLink
-                          aria-label={item.button.label}
-                          href={item.button.href}
-                          openNewTab={item.button.openNewTab}
+                          aria-label={item.button_label}
+                          href={item.button_href}
                         >
-                          <span>{item.button.label}</span>
+                          <span>{item.button_label}</span>
+                          {/* Original SVG Arrow Restored */}
                           <svg
                             width={28}
                             height={9}
@@ -107,20 +146,19 @@ export function Hero() {
             </SwiperSlide>
           ))}
 
+          {/* Side Navigation Arrows Restored */}
           <div className="absolute right-0 top-[50%] z-50 hidden h-max w-full [transform:translateY(-50%)] lg:block">
             <Container>
               <div className="ml-auto grid max-w-max gap-2.5 px-4">
                 <button
                   className={cn(navigationButtonCommonClasses)}
                   onClick={() => swiperRef.current?.slidePrev()}
-                  aria-label="slide prev"
                 >
                   <FaArrowLeftLong />
                 </button>
                 <button
                   className={cn(navigationButtonCommonClasses)}
                   onClick={() => swiperRef.current?.slideNext()}
-                  aria-label="slide next"
                 >
                   <FaArrowRightLong />
                 </button>

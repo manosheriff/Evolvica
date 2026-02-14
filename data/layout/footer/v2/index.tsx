@@ -116,7 +116,7 @@ export const footerSectionData: FooterSectionProps = {
     location: '1212, Lav Vegas, The Veg Street, USA',
   },
   footerBottom: {
-    copyrightText: '© Yoursitename  2024 | All Rights Reserved',
+    copyrightText: '© evolvica.ai  2024 | All Rights Reserved',
     links: [
       {
         label: 'Trams & Condition',

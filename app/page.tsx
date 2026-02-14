@@ -17,7 +17,8 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Evolvica | Home',
-  description: 'Techlab - IT Solutions and Services React Nextjs Template',
+  description:
+    'Evolvica - Transform How You Qualify, Review, and Coach with AI',
 };
 
 export default function Page() {
