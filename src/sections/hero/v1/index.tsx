@@ -1,5 +1,4 @@
 'use client';
-
 import { Container } from '@/src/components/container';
 import { Button } from '@/src/components/button';
 import { CustomLink } from '@/src/components/custom-link';
